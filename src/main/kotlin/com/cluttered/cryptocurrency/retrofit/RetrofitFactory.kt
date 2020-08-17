@@ -21,7 +21,7 @@ object RetrofitFactory {
                 .addConverterFactory(createGsonConverterFactory())
                 .addCallAdapterFactory(Rx2ErrorCallAdapterFactory)
                 .client(createOkHttpClient(key, secret))
-                .baseUrl("https://bittrex.com/api/")
+                .baseUrl("https://api.bittrex.com/")
                 .build()
     }
 

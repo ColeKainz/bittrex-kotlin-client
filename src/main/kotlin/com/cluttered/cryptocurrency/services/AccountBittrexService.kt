@@ -1,6 +1,8 @@
 package com.cluttered.cryptocurrency.services
 
 import com.cluttered.cryptocurrency.model.*
+import com.cluttered.cryptocurrency.retrofit.BittrexObservable
+import com.cluttered.cryptocurrency.retrofit.RetrofitFactory
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.http.GET
@@ -11,33 +13,15 @@ import java.util.*
 interface AccountBittrexService {
 
     companion object {
-        const val V1_ACCOUNT = "v1.1/account"
-        const val CURRENCY = "currency"
-
+        fun create(key: String = "", secret: String = "") = create(RetrofitFactory.create())
         fun create(retrofit: Retrofit): AccountBittrexService {
             return retrofit.create(AccountBittrexService::class.java)
         }
     }
 
-    @GET("$V1_ACCOUNT/getbalances")
-    fun getBalances(): Observable<ApiResponse<MutableList<Balance>>>
+    @GET("v3/account")
+    fun getAccount(): BittrexObservable<Account>
 
-    @GET("$V1_ACCOUNT/getbalance")
-    fun getBalance(@Query(CURRENCY) currency: String): Observable<ApiResponse<Balance>>
-
-    @GET("$V1_ACCOUNT/getdepositaddress")
-    fun getDepositAddress(@Query(CURRENCY) currency: String): Observable<ApiResponse<DepositAddress>>
-
-    @GET("$V1_ACCOUNT/withdraw")
-    fun withdraw(@Query(CURRENCY) currency: String,
-                 @Query("quantity") quantity: BigDecimal,
-                 @Query("address") address: String,
-                 @Query("paymentid") paymentId: String = ""):
-            Observable<ApiResponse<UuidResponse>>
-
-    @GET("$V1_ACCOUNT/getorder")
-    fun getOrder(@Query("uuid") uuid: UUID): Observable<ApiResponse<AccountOrder>>
-
-    @GET("$V1_ACCOUNT/getorderhistory")
-    fun getOrderHistory(@Query("market") market: String = ""): Observable<ApiResponse<MutableList<OrderHistory>>>
+    @GET("v3/account/volume")
+    fun getAccountVolume(): BittrexObservable<AccountVolume>
 }
