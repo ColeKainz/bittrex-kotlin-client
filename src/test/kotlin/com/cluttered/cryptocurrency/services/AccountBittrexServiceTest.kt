@@ -1,6 +1,6 @@
 package com.cluttered.cryptocurrency.services
 
-import com.cluttered.cryptocurrency.model.Account
+import com.cluttered.cryptocurrency.model.account.Account
 import com.cluttered.cryptocurrency.retrofit.onFailure
 import com.cluttered.cryptocurrency.retrofit.onSuccess
 import org.assertj.core.api.Assertions.assertThat

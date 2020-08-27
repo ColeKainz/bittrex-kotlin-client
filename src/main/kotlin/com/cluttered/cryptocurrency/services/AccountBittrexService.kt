@@ -1,14 +1,11 @@
 package com.cluttered.cryptocurrency.services
 
-import com.cluttered.cryptocurrency.model.*
+import com.cluttered.cryptocurrency.model.account.Account
+import com.cluttered.cryptocurrency.model.account.AccountVolume
 import com.cluttered.cryptocurrency.retrofit.BittrexObservable
 import com.cluttered.cryptocurrency.retrofit.RetrofitFactory
-import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.http.GET
-import retrofit2.http.Query
-import java.math.BigDecimal
-import java.util.*
 
 interface AccountBittrexService {
 

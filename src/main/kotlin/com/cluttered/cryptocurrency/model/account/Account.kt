@@ -1,4 +1,4 @@
-package com.cluttered.cryptocurrency.model
+package com.cluttered.cryptocurrency.model.account
 
 data class Account (
         val subAccountId: String,
