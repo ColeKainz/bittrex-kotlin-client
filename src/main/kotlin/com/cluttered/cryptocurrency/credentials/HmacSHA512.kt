@@ -1,6 +1,5 @@
 package com.cluttered.cryptocurrency.credentials
 
-import com.cluttered.cryptocurrency.services.AddressBittrexService
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.SignatureException

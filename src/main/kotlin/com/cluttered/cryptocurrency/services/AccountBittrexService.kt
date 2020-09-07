@@ -10,7 +10,7 @@ import retrofit2.http.GET
 interface AccountBittrexService {
 
     companion object {
-        fun create(key: String = "", secret: String = "") = create(RetrofitFactory.create())
+        fun create(key: String = "", secret: String = "") = create(RetrofitFactory.create(key, secret))
         fun create(retrofit: Retrofit): AccountBittrexService {
             return retrofit.create(AccountBittrexService::class.java)
         }
