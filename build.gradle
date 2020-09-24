@@ -20,8 +20,8 @@ if (!JavaVersion.current().java8Compatible) {
     throw new IllegalStateException("Must be built with Java 8 or higher")
 }
 
-group 'com.cluttered-cryptocurrency'
-version '2.3.3'
+group 'com.bushka.bittrex-kotlin-client'
+version '0.0.1'
 
 ext {
     _gradle_version = '4.6'
