@@ -1,5 +1,6 @@
-package com.bushka.bittrex.retrofit
+package com.bushka.bittrex.network.retrofit
 
+import com.bushka.bittrex.network.BittrexObservable
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit

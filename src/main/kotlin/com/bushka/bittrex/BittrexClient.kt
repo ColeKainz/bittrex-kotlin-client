@@ -1,6 +1,6 @@
 package com.bushka.bittrex
 
-import com.bushka.bittrex.retrofit.RetrofitFactory
+import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import com.bushka.bittrex.services.*
 
 class BittrexClient(key: String, secret: String) {

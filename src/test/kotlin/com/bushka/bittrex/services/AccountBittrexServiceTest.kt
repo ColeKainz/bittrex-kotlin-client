@@ -1,8 +1,8 @@
 package com.bushka.bittrex.services
 
 import com.bushka.bittrex.model.account.Account
-import com.bushka.bittrex.retrofit.onFailure
-import com.bushka.bittrex.retrofit.onSuccess
+import com.bushka.bittrex.network.onFailure
+import com.bushka.bittrex.network.onSuccess
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.bushka.bittrex.retrofit
+package com.bushka.bittrex.network.retrofit
 
 import com.bushka.bittrex.credentials.ApiSignInterceptor
 import com.bushka.bittrex.marshallers.InstantDeserializer

@@ -4,8 +4,8 @@ import com.bushka.bittrex.model.conditionalorders.NewOrder
 import com.bushka.bittrex.model.deposits.DepositStatus
 import com.bushka.bittrex.model.orders.Execution
 import com.bushka.bittrex.model.orders.Order
-import com.bushka.bittrex.retrofit.BittrexObservable
-import com.bushka.bittrex.retrofit.RetrofitFactory
+import com.bushka.bittrex.network.BittrexObservable
+import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
 import retrofit2.http.*
 

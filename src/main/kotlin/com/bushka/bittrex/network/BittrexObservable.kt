@@ -1,4 +1,4 @@
-package com.bushka.bittrex.retrofit
+package com.bushka.bittrex.network
 
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable

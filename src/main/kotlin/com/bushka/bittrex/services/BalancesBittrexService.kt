@@ -1,8 +1,8 @@
 package com.bushka.bittrex.services
 
 import com.bushka.bittrex.model.balances.Balance
-import com.bushka.bittrex.retrofit.BittrexObservable
-import com.bushka.bittrex.retrofit.RetrofitFactory
+import com.bushka.bittrex.network.BittrexObservable
+import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.HEAD

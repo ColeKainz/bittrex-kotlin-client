@@ -4,8 +4,8 @@ import com.bushka.bittrex.model.withdrawals.NewWithdrawal
 import com.bushka.bittrex.model.withdrawals.WhiteListAddress
 import com.bushka.bittrex.model.withdrawals.Withdrawal
 import com.bushka.bittrex.model.withdrawals.WithdrawalStatus
-import com.bushka.bittrex.retrofit.BittrexObservable
-import com.bushka.bittrex.retrofit.RetrofitFactory
+import com.bushka.bittrex.network.BittrexObservable
+import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
 import retrofit2.http.*
 
