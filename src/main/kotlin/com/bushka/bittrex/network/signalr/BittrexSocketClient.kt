@@ -34,7 +34,11 @@ class BittrexSocketClient(apiKey: String, apiKeySecret: String, messageHandler: 
         socketApi.setMessageHandler(messageHandler)
     }
 
-    fun subscribe(channels: List<String>) {
-        socketApi.subscribe(channels)
+    fun subscribe(channels: List<String>): List<SocketResponse> {
+        return socketApi.subscribe(channels)
+    }
+
+    fun unsubscribe(): Boolean {
+        return socketApi.disconnect()
     }
 }

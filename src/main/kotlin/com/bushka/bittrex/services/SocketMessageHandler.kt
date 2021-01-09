@@ -1,8 +1,11 @@
 package com.bushka.bittrex.services
 
 import com.bushka.bittrex.model.markets.Ticker
+import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.signalr.DataConverter
 import com.google.gson.GsonBuilder
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 /**
  * Handles messages from the socket service, each method is called based on the type of
@@ -10,9 +13,7 @@ import com.google.gson.GsonBuilder
  * @param observables A map of channel name as defined in the Bittrex API docs -> observable
  * the observable is updated with data as messages come in and handlers can be attached to them.
  */
-class SocketMessageHandler(observables: MutableMap<String, BittrexObservable>) {
-    //why did I have to do this?
-    val observables = observables
+class SocketMessageHandler(val observables: MutableMap<String, PublishSubject<Any>>) {
 
     fun ticker(compressedData: String) {
         var convertedData = DataConverter.decodeMessage(compressedData)
@@ -21,6 +22,6 @@ class SocketMessageHandler(observables: MutableMap<String, BittrexObservable>) {
 
         //string interpolation derped out here
         val observable = observables.get("ticker_" + deserialized.symbol)
-        observable?.update(deserialized)
+        observable?.onNext(deserialized)
     }
 }

@@ -1,17 +1,25 @@
 package com.bushka.bittrex.services
 
+import com.bushka.bittrex.model.markets.Ticker
+import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.signalr.BittrexSocketClient
-import java.util.*
+import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.Observer
+import io.reactivex.observables.ConnectableObservable
+import io.reactivex.subjects.PublishSubject
 
 /**
  * Observable implementation to handle updates for data.
  */
-class BittrexObservable : Observable() {
-    fun update(newData: Any) {
-        setChanged()
-        notifyObservers(newData)
+class BittrexObservableImpl : BittrexObservable<Any>() {
+    override fun subscribeActual(observer: Observer<in Any>?) {
+        TODO("Not yet implemented")
     }
+
 }
+
 
 /**
  * Handles subscribing to sockets and returns observables that can be used to watch for changes.
@@ -24,8 +32,9 @@ class BittrexObservable : Observable() {
  *  @param apiKeySecret Bittrex API Secret
  */
 class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
-    var channels = mutableListOf<String>()
-    var observables = mutableMapOf<String, BittrexObservable>()
+    //TODO Use other bittrex observable
+    //TODO visiblity of observables, etc
+    var observables = mutableMapOf<String, PublishSubject<Any>>()
     val messageHandler = SocketMessageHandler(observables)
     val socketClient = BittrexSocketClient(apiKey, apiKeySecret, messageHandler)
 
@@ -35,20 +44,26 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
      * @param symbol String representation of the market that Ticker updates will be listened for (ex: "BTC-USD")
      * @return Observable an observable that will be updated with socket messages
      */
-    fun subscribeTicker(symbol: String): Observable {
+    fun subscribeTicker(symbol: String): Observable<Ticker> {
         val channelName = "ticker_$symbol"
-        channels.add(channelName)
 
-        val observable = BittrexObservable()
-        observables[channelName] = observable
+        val observable = PublishSubject.create<Ticker>()
+        observables[channelName] = observable as PublishSubject<Any>
         return observable
     }
+
+    /**Todo: Unsubscribe ticker method to remove observable**/
 
     /**
      * Starts listening to the socket once all the channel subscriptions have been set up.
      */
     fun start() {
-        socketClient.subscribe(channels);
+        /**TODO: Disallow subscribe if connection exists**/
+        val s = socketClient.subscribe(observables.keys.toList())
+    }
+
+    fun stop() {
+        socketClient.unsubscribe()
     }
 }
 
@@ -56,10 +71,9 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
  * Example
  */
 fun main(args: Array<String>) {
-    val s = SocketSubscriptionService("apiKey", "apiKeySecret")
+    val s = SocketSubscriptionService("", "")
     val tickerObservable = s.subscribeTicker("BTC-USD")
-    tickerObservable.addObserver { o, arg ->
-        println(o)
+    tickerObservable.subscribe { arg ->
         println(arg)
     }
     s.start()
