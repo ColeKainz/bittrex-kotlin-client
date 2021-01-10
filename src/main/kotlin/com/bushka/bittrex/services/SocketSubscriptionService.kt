@@ -1,25 +1,16 @@
 package com.bushka.bittrex.services
 
-import com.bushka.bittrex.model.markets.Ticker
+import com.bushka.bittrex.model.balances.Balance
+import com.bushka.bittrex.model.conditionalorders.ConditionalOrder
+import com.bushka.bittrex.model.deposits.Deposit
+import com.bushka.bittrex.model.markets.*
+import com.bushka.bittrex.model.orders.Execution
+import com.bushka.bittrex.model.orders.Order
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.signalr.BittrexSocketClient
-import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Observer
-import io.reactivex.observables.ConnectableObservable
 import io.reactivex.subjects.PublishSubject
-
-/**
- * Observable implementation to handle updates for data.
- */
-class BittrexObservableImpl : BittrexObservable<Any>() {
-    override fun subscribeActual(observer: Observer<in Any>?) {
-        TODO("Not yet implemented")
-    }
-
-}
-
 
 /**
  * Handles subscribing to sockets and returns observables that can be used to watch for changes.
@@ -32,11 +23,50 @@ class BittrexObservableImpl : BittrexObservable<Any>() {
  *  @param apiKeySecret Bittrex API Secret
  */
 class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
-    //TODO Use other bittrex observable
     //TODO visiblity of observables, etc
-    var observables = mutableMapOf<String, PublishSubject<Any>>()
-    val messageHandler = SocketMessageHandler(observables)
-    val socketClient = BittrexSocketClient(apiKey, apiKeySecret, messageHandler)
+    private var observables = mutableMapOf<String, PublishSubject<Any>>()
+    private val messageHandler = SocketMessageHandler(observables)
+    private val socketClient = BittrexSocketClient(apiKey, apiKeySecret, messageHandler)
+
+    fun subscribeBalance(): Observable<Balance> {
+        return subscribeChannel<Balance>("balance")
+    }
+
+    fun subscribeCandle(symbol: String, interval: String): Observable<Candle> {
+        return subscribeChannel<Candle>("candle_$symbol" + "_" + interval)
+    }
+
+    fun subscribeConditionalOrder(): Observable<ConditionalOrder> {
+        return subscribeChannel<ConditionalOrder>("conditional_order")
+    }
+
+    fun subscribeDeposit(): Observable<Deposit> {
+        return subscribeChannel<Deposit>("deposit")
+    }
+
+    fun subscribeExecution(): Observable<Execution> {
+        return subscribeChannel<Execution>("execution")
+    }
+
+    fun subscribeHeartbeat(): Observable<Unit> {
+        return subscribeChannel<Unit>("heartbeat")
+    }
+
+    fun subscribeMarketSummaries(): Observable<MarketSummary> {
+        return subscribeChannel<MarketSummary>("market_summaries")
+    }
+
+    fun subscribeMarketSummary(symbol: String): Observable<MarketSummary> {
+        return subscribeChannel<MarketSummary>("market_summary_$symbol")
+    }
+
+    fun subscribeOrder(): Observable<Order> {
+        return subscribeChannel<Order>("order")
+    }
+
+    fun subscribeOrderBook(symbol: String, depth: Int): Observable<OrderBook> {
+        return subscribeChannel<OrderBook>("balance")
+    }
 
     /**
      * Subscribes to a specific market's ticker
@@ -45,10 +75,20 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
      * @return Observable an observable that will be updated with socket messages
      */
     fun subscribeTicker(symbol: String): Observable<Ticker> {
-        val channelName = "ticker_$symbol"
+        return subscribeChannel<Ticker>("ticker_$symbol")
+    }
 
-        val observable = PublishSubject.create<Ticker>()
-        observables[channelName] = observable as PublishSubject<Any>
+    fun subscribeTickers(): Observable<Ticker> {
+        return subscribeChannel<Ticker>("tickers")
+    }
+
+    fun subscribeTrade(symbol: String): Observable<Trade> {
+        return subscribeChannel<Trade>("trade_$symbol")
+    }
+
+    private fun <T> subscribeChannel(channel: String) : Observable<T> {
+        val observable = PublishSubject.create<T>()
+        observables[channel] = observable as PublishSubject<Any>
         return observable
     }
 
@@ -71,8 +111,9 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
  * Example
  */
 fun main(args: Array<String>) {
-    val s = SocketSubscriptionService("", "")
-    val tickerObservable = s.subscribeTicker("BTC-USD")
+    val s = SocketSubscriptionService("13c3f93a297246418b72b7662d0131b1", "adcb4a1e5c854074a1e3fd425808c1f8")
+//    val tickerObservable = s.subscribeTicker("BTC-USD")
+    val tickerObservable = s.subscribeTickers()
     tickerObservable.subscribe { arg ->
         println(arg)
     }

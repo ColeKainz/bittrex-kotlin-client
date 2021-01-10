@@ -1,10 +1,7 @@
 package com.bushka.bittrex.network.signalr
 
-import com.bushka.bittrex.model.balances.Balance
-import com.bushka.bittrex.model.markets.Ticker
-import com.google.gson.GsonBuilder
 import sun.plugin.dom.exception.InvalidStateException
-import kotlin.properties.Delegates
+
 
 //fun main(args: Array<String>) {
 //    val socketClient = BittrexSocketClient("13c3f93a297246418b72b7662d0131b1", "adcb4a1e5c854074a1e3fd425808c1f8")
