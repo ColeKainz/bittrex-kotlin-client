@@ -17,7 +17,6 @@ class BittrexObservableImpl : BittrexObservable<Any>() {
     override fun subscribeActual(observer: Observer<in Any>?) {
         TODO("Not yet implemented")
     }
-
 }
 
 
