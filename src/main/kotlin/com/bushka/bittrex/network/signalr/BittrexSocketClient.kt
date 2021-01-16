@@ -1,14 +1,5 @@
 package com.bushka.bittrex.network.signalr
 
-import sun.plugin.dom.exception.InvalidStateException
-
-
-//fun main(args: Array<String>) {
-//    val socketClient = BittrexSocketClient("13c3f93a297246418b72b7662d0131b1", "adcb4a1e5c854074a1e3fd425808c1f8")
-//    socketClient.subscribe(listOf("ticker_BTC-USD"))
-//    readLine()
-//}
-
 /**
  * Connect to different socket streams
  * Observable(onResponse) subscribe(enum channel) -> sub to channel (eg: balance)
@@ -21,12 +12,12 @@ class BittrexSocketClient(apiKey: String, apiKeySecret: String, messageHandler: 
     init {
         val connectResponse = socketApi.connect()
         if(!connectResponse) {
-            throw InvalidStateException("Connection failed")
+            throw IllegalStateException("Connection failed")
         }
 
         val authResponse = socketApi.authenticate(apiKey, apiKeySecret)
         if(!authResponse.Success) {
-            throw InvalidStateException("Auth error due to ${authResponse.ErrorCode}")
+            throw IllegalStateException("Auth error due to ${authResponse.ErrorCode}")
         }
         socketApi.setMessageHandler(messageHandler)
     }
