@@ -70,7 +70,7 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
  * Example
  */
 fun main(args: Array<String>) {
-    val s = SocketSubscriptionService("", "")
+    val s = SocketSubscriptionService("a4e2274f2ef64410ada5ecd3198b7284", "007df1abd8fe4b5399c4f36f42ee4cff")
     val tickerObservable = s.subscribeTicker("BTC-USD")
     tickerObservable.subscribe { arg ->
         println(arg)
