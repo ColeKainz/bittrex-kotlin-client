@@ -1,13 +1,8 @@
 package com.bushka.bittrex.services
 
-import com.bushka.bittrex.model.balances.Balance
-import com.bushka.bittrex.model.markets.Candle
-import com.bushka.bittrex.model.markets.Ticker
-import com.bushka.bittrex.model.sockets.TickerDelta
-import com.bushka.bittrex.network.BittrexObservable
+import com.bushka.bittrex.model.sockets.*
 import com.bushka.bittrex.network.signalr.DataConverter
 import com.google.gson.GsonBuilder
-import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
 /**
@@ -19,67 +14,58 @@ import io.reactivex.subjects.PublishSubject
 class SocketMessageHandler(val observables: MutableMap<String, PublishSubject<Any>>) {
 
     fun balance(compressedData: String) {
-        val deserialized = deserializeMessage<Balance>(compressedData)
-        val observable = observables["balance"]
-        observable?.onNext(deserialized)
+        val deserialized = deserializeMessage<BalanceDelta>(compressedData)
+        updateSocketWithData("balance", deserialized)
     }
 
     fun candle(compressedData: String) {
-        val deserialized = deserializeMessage<Candle>(compressedData)
-        //TODO: doesn't deserialize to a candle
-        val observable = observables["candle_" + deserialized]
-        observable?.onNext(deserialized)
+        val deserialized = deserializeMessage<CandleDelta>(compressedData)
+        updateSocketWithData("candle_" + deserialized.marketSymbol, deserialized)
     }
 
     fun conditional_order(compressedData: String) {
-        val deserialized = deserializeMessage<Candle>(compressedData)
-        val observable = observables["conditional_order"]
-        observable?.onNext(deserialized)
+        val deserialized = deserializeMessage<ConditionalOrderDelta>(compressedData)
+        updateSocketWithData("conditional_order", deserialized)
     }
 
     fun deposit(compressedData: String) {
-        val deserialized = deserializeMessage<Candle>(compressedData)
-        val observable = observables["deposit"]
-        observable?.onNext(deserialized)
+        val deserialized = deserializeMessage<DepositDelta>(compressedData)
+        updateSocketWithData("deposit", deserialized)
     }
 
     fun execution(compressedData: String) {
-        val deserialized = deserializeMessage<Candle>(compressedData)
-        val observable = observables["execution"]
-        observable?.onNext(deserialized)
+        val deserialized = deserializeMessage<ExecutionDelta>(compressedData)
+        updateSocketWithData("execution", deserialized)
     }
 
     fun heartbeat(compressedData: String) {
-        val deserialized = deserializeMessage<Candle>(compressedData)
-        val observable = observables["execution"]
-        observable?.onNext(deserialized)
+        updateSocketWithData("heartbeat", "heartbeat")
     }
 
     fun market_summaries(compressedData: String) {
-        val deserialized = deserializeMessage<Candle>(compressedData)
-        val observable = observables["execution"]
-        observable?.onNext(deserialized)
+        val deserialized = deserializeMessage<MarketSummaryDelta>(compressedData)
+        updateSocketWithData("market_summaries", deserialized)
     }
 
     fun market_summary(compressedData: String) {
-        val deserialized = deserializeMessage<Candle>(compressedData)
-        val observable = observables["execution"]
-        observable?.onNext(deserialized)
+        val deserialized = deserializeMessage<MarketSummary>(compressedData)
+        updateSocketWithData("market_summary_" + deserialized.symbol, deserialized)
     }
 
     fun ticker(compressedData: String) {
         val deserialized = deserializeMessage<Ticker>(compressedData)
-        val observable = observables["ticker_" + deserialized.symbol]
-        observable?.onNext(deserialized)
+        updateSocketWithData("ticker_" + deserialized.symbol, deserialized)
     }
 
     fun tickers(compressedData: String) {
         val deserialized = deserializeMessage<TickerDelta>(compressedData)
-        //TODO: doesn't deserialize to a ticker
-        val observable = observables["tickers"]
-        observable?.onNext(deserialized)
+        updateSocketWithData("tickers", deserialized)
     }
 
+    private fun updateSocketWithData(channelName: String, data: Any) {
+        val observable = observables[channelName]
+        observable?.onNext(data)
+    }
     private inline fun <reified T> deserializeMessage(compressedData: String): T {
         val convertedData = DataConverter.decodeMessage(compressedData)
         println(convertedData)

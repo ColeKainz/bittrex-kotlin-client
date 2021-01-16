@@ -3,6 +3,7 @@ package com.bushka.bittrex.model.sockets
 import java.math.BigDecimal
 
 data class MarketSummary (
+        val symbol: String,
         val high: BigDecimal,
         val low: BigDecimal,
         val volume: BigDecimal,

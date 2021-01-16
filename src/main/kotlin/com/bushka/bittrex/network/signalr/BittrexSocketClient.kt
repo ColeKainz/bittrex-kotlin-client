@@ -6,18 +6,20 @@ package com.bushka.bittrex.network.signalr
      * basic validation -- disallow multiple subs to channels
  * on(lambda(response)) -> this is where data comes in from channels you're subbed to
  */
-class BittrexSocketClient(apiKey: String, apiKeySecret: String, messageHandler: Any) {
+class BittrexSocketClient(messageHandler: Any) {
     val socketApi = SocketClient()
+
+    constructor(apiKey: String, apiKeySecret: String, messageHandler: Any) : this(messageHandler) {
+        val authResponse = socketApi.authenticate(apiKey, apiKeySecret)
+        if(!authResponse.Success) {
+            throw IllegalStateException("Auth error due to ${authResponse.ErrorCode}")
+        }
+    }
 
     init {
         val connectResponse = socketApi.connect()
         if(!connectResponse) {
             throw IllegalStateException("Connection failed")
-        }
-
-        val authResponse = socketApi.authenticate(apiKey, apiKeySecret)
-        if(!authResponse.Success) {
-            throw IllegalStateException("Auth error due to ${authResponse.ErrorCode}")
         }
         socketApi.setMessageHandler(messageHandler)
     }

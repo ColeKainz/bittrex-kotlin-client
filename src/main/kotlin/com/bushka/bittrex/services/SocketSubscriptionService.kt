@@ -16,11 +16,19 @@ import io.reactivex.subjects.PublishSubject
  *  @param apiKey Bittrex API Key
  *  @param apiKeySecret Bittrex API Secret
  */
-class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
+class SocketSubscriptionService() {
     //TODO visiblity of observables, etc
     private var observables = mutableMapOf<String, PublishSubject<Any>>()
     private val messageHandler = SocketMessageHandler(observables)
-    private val socketClient = BittrexSocketClient(apiKey, apiKeySecret, messageHandler)
+    private var socketClient: BittrexSocketClient
+
+    constructor(apiKey: String, apiKeySecret: String) : this() {
+        socketClient = BittrexSocketClient(apiKey, apiKeySecret, messageHandler)
+    }
+
+    init {
+        socketClient = BittrexSocketClient(messageHandler)
+    }
 
     fun subscribeBalance(): Observable<BalanceDelta> {
         return subscribeChannel<BalanceDelta>("balance")
@@ -42,8 +50,8 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
         return subscribeChannel<ExecutionDelta>("execution")
     }
 
-    fun subscribeHeartbeat(): Observable<Unit> {
-        return subscribeChannel<Unit>("heartbeat")
+    fun subscribeHeartbeat(): Observable<String> {
+        return subscribeChannel<String>("heartbeat")
     }
 
     fun subscribeMarketSummaries(): Observable<MarketSummaryDelta> {
@@ -105,7 +113,7 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
  * Example
  */
 fun main(args: Array<String>) {
-    val s = SocketSubscriptionService("", "")
+    val s = SocketSubscriptionService()
     val tickerObservable = s.subscribeTickers()
     tickerObservable.subscribe { arg ->
         println(arg)
