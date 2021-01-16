@@ -3,6 +3,7 @@ package com.bushka.bittrex.services
 import com.bushka.bittrex.model.balances.Balance
 import com.bushka.bittrex.model.markets.Candle
 import com.bushka.bittrex.model.markets.Ticker
+import com.bushka.bittrex.model.sockets.TickerDelta
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.signalr.DataConverter
 import com.google.gson.GsonBuilder
@@ -73,7 +74,7 @@ class SocketMessageHandler(val observables: MutableMap<String, PublishSubject<An
     }
 
     fun tickers(compressedData: String) {
-        val deserialized = deserializeMessage<Ticker>(compressedData)
+        val deserialized = deserializeMessage<TickerDelta>(compressedData)
         //TODO: doesn't deserialize to a ticker
         val observable = observables["tickers"]
         observable?.onNext(deserialized)

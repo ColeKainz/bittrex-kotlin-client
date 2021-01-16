@@ -1,17 +1,11 @@
 package com.bushka.bittrex.services
 
-import com.bushka.bittrex.model.balances.Balance
-import com.bushka.bittrex.model.conditionalorders.ConditionalOrder
-import com.bushka.bittrex.model.deposits.Deposit
-import com.bushka.bittrex.model.markets.*
-import com.bushka.bittrex.model.orders.Execution
-import com.bushka.bittrex.model.orders.Order
-import com.bushka.bittrex.network.BittrexObservable
+import com.bushka.bittrex.model.sockets.MarketSummary
+import com.bushka.bittrex.model.sockets.Ticker
+import com.bushka.bittrex.model.sockets.*
 import com.bushka.bittrex.network.signalr.BittrexSocketClient
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.subjects.PublishSubject
-
 /**
  * Handles subscribing to sockets and returns observables that can be used to watch for changes.
  * Usage:
@@ -28,44 +22,44 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
     private val messageHandler = SocketMessageHandler(observables)
     private val socketClient = BittrexSocketClient(apiKey, apiKeySecret, messageHandler)
 
-    fun subscribeBalance(): Observable<Balance> {
-        return subscribeChannel<Balance>("balance")
+    fun subscribeBalance(): Observable<BalanceDelta> {
+        return subscribeChannel<BalanceDelta>("balance")
     }
 
-    fun subscribeCandle(symbol: String, interval: String): Observable<Candle> {
-        return subscribeChannel<Candle>("candle_$symbol" + "_" + interval)
+    fun subscribeCandle(symbol: String, interval: String): Observable<CandleDelta> {
+        return subscribeChannel<CandleDelta>("candle_$symbol" + "_" + interval)
     }
 
-    fun subscribeConditionalOrder(): Observable<ConditionalOrder> {
-        return subscribeChannel<ConditionalOrder>("conditional_order")
+    fun subscribeConditionalOrder(): Observable<ConditionalOrderDelta> {
+        return subscribeChannel<ConditionalOrderDelta>("conditional_order")
     }
 
-    fun subscribeDeposit(): Observable<Deposit> {
-        return subscribeChannel<Deposit>("deposit")
+    fun subscribeDeposit(): Observable<DepositDelta> {
+        return subscribeChannel<DepositDelta>("deposit")
     }
 
-    fun subscribeExecution(): Observable<Execution> {
-        return subscribeChannel<Execution>("execution")
+    fun subscribeExecution(): Observable<ExecutionDelta> {
+        return subscribeChannel<ExecutionDelta>("execution")
     }
 
     fun subscribeHeartbeat(): Observable<Unit> {
         return subscribeChannel<Unit>("heartbeat")
     }
 
-    fun subscribeMarketSummaries(): Observable<MarketSummary> {
-        return subscribeChannel<MarketSummary>("market_summaries")
+    fun subscribeMarketSummaries(): Observable<MarketSummaryDelta> {
+        return subscribeChannel<MarketSummaryDelta>("market_summaries")
     }
 
     fun subscribeMarketSummary(symbol: String): Observable<MarketSummary> {
         return subscribeChannel<MarketSummary>("market_summary_$symbol")
     }
 
-    fun subscribeOrder(): Observable<Order> {
-        return subscribeChannel<Order>("order")
+    fun subscribeOrder(): Observable<OrderDelta> {
+        return subscribeChannel<OrderDelta>("order")
     }
 
-    fun subscribeOrderBook(symbol: String, depth: Int): Observable<OrderBook> {
-        return subscribeChannel<OrderBook>("balance")
+    fun subscribeOrderBook(symbol: String, depth: Int): Observable<OrderbookDelta> {
+        return subscribeChannel<OrderbookDelta>("balance")
     }
 
     /**
@@ -78,12 +72,12 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
         return subscribeChannel<Ticker>("ticker_$symbol")
     }
 
-    fun subscribeTickers(): Observable<Ticker> {
-        return subscribeChannel<Ticker>("tickers")
+    fun subscribeTickers(): Observable<TickerDelta> {
+        return subscribeChannel<TickerDelta>("tickers")
     }
 
-    fun subscribeTrade(symbol: String): Observable<Trade> {
-        return subscribeChannel<Trade>("trade_$symbol")
+    fun subscribeTrade(symbol: String): Observable<TradeDelta> {
+        return subscribeChannel<TradeDelta>("trade_$symbol")
     }
 
     private fun <T> subscribeChannel(channel: String) : Observable<T> {
@@ -112,7 +106,7 @@ class SocketSubscriptionService(apiKey: String, apiKeySecret: String) {
  */
 fun main(args: Array<String>) {
     val s = SocketSubscriptionService("", "")
-    val tickerObservable = s.subscribeTicker("BTC-USD")
+    val tickerObservable = s.subscribeTickers()
     tickerObservable.subscribe { arg ->
         println(arg)
     }
