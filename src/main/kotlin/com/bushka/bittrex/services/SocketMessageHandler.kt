@@ -1,6 +1,7 @@
 package com.bushka.bittrex.services
 
 import com.bushka.bittrex.model.sockets.*
+import com.bushka.bittrex.network.signalr.BittrexSocketClient
 import com.bushka.bittrex.network.signalr.DataConverter
 import com.google.gson.GsonBuilder
 import io.reactivex.subjects.PublishSubject
@@ -11,7 +12,11 @@ import io.reactivex.subjects.PublishSubject
  * @param observables A map of channel name as defined in the Bittrex API docs -> observable
  * the observable is updated with data as messages come in and handlers can be attached to them.
  */
-class SocketMessageHandler(val observables: MutableMap<String, PublishSubject<Any>>) {
+class SocketMessageHandler(
+        val observables: MutableMap<String, PublishSubject<Any>>,
+        val nonChannelObservables: MutableMap<String, PublishSubject<Any>>,
+        val reAuthFunction: () -> Unit
+) {
 
     fun balance(compressedData: String) {
         val deserialized = deserializeMessage<BalanceDelta>(compressedData)
@@ -60,6 +65,16 @@ class SocketMessageHandler(val observables: MutableMap<String, PublishSubject<An
     fun tickers(compressedData: String) {
         val deserialized = deserializeMessage<TickerDelta>(compressedData)
         updateSocketWithData("tickers", deserialized)
+    }
+
+    fun authenticationExpiring() {
+        val authExpiringObservable = nonChannelObservables["authenticationExpiring"]
+
+        if(authExpiringObservable  == null) {
+            reAuthFunction()
+        } else {
+            authExpiringObservable.onNext("authenticationExpiring")
+        }
     }
 
     private fun updateSocketWithData(channelName: String, data: Any) {

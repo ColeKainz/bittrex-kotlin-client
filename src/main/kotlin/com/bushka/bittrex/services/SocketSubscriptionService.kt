@@ -18,8 +18,9 @@ import io.reactivex.subjects.PublishSubject
  */
 class SocketSubscriptionService() {
     private var observables = mutableMapOf<String, PublishSubject<Any>>()
-    private val messageHandler = SocketMessageHandler(observables)
+    private var nonChannelObservables = mutableMapOf<String, PublishSubject<Any>>()
     private var socketClient: BittrexSocketClient
+    private val messageHandler = SocketMessageHandler(observables, nonChannelObservables, { this.reAuthenticate() })
 
     /**
      * Alternative constructor that allows for authenticated socket subscriptions.
@@ -33,6 +34,7 @@ class SocketSubscriptionService() {
     init {
         socketClient = BittrexSocketClient(messageHandler)
     }
+
     /**
      * Subscribes to the balance socket
      * Corresponds to the Balance channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Balance)
@@ -45,13 +47,13 @@ class SocketSubscriptionService() {
     /**
      * Subscribes to the Candle socket
      * Corresponds to the Candle channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Candle)
-     * @param {String} symbol representation of the market that Candle updates will be listened for (ex: "BTC-USD")
+     * @param {String} marketSymbol representation of the market that Candle updates will be listened for (ex: "BTC-USD")
      * @param {String} interval desired time interval between candles. Possible values:
      * [MINUTE_1, MINUTE_5, HOUR_1, DAY_1]
      * @return {Observable} An observable that will be updated with socket messages
      */
-    fun subscribeCandle(symbol: String, interval: String): Observable<CandleDelta> {
-        return subscribeChannel<CandleDelta>("candle_$symbol" + "_" + interval)
+    fun subscribeCandle(marketSymbol: String, interval: String): Observable<CandleDelta> {
+        return subscribeChannel<CandleDelta>("candle_$marketSymbol" + "_" + interval)
     }
 
     /**
@@ -102,11 +104,11 @@ class SocketSubscriptionService() {
     /**
      * Subscribes to the Market Summary socket
      * Corresponds to the Market Summary channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Market-Summary)
-     * @param {String} symbol representation of the market that Market Summary updates will be listened for (ex: "BTC-USD")
+     * @param {String} marketSymbol representation of the market that Market Summary updates will be listened for (ex: "BTC-USD")
      * @return {Observable} An observable that will be updated with socket messages
      */
-    fun subscribeMarketSummary(symbol: String): Observable<MarketSummary> {
-        return subscribeChannel<MarketSummary>("market_summary_$symbol")
+    fun subscribeMarketSummary(marketSymbol: String): Observable<MarketSummary> {
+        return subscribeChannel<MarketSummary>("market_summary_$marketSymbol")
     }
 
     /**
@@ -121,22 +123,22 @@ class SocketSubscriptionService() {
     /**
      * Subscribes to the Order Book socket
      * Corresponds to the Order Book channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Order-Book)
-     * @param {String} symbol representation of the market that Order Book updates will be listened for (ex: "BTC-USD")
+     * @param {String} marketSymbol representation of the market that Order Book updates will be listened for (ex: "BTC-USD")
      * @param {String} depth depth of the Order Book to monitor. Possible values: [1, 25, 500]
      * @return {Observable} An observable that will be updated with socket messages
      */
-    fun subscribeOrderBook(symbol: String, depth: String): Observable<OrderbookDelta> {
-        return subscribeChannel<OrderbookDelta>("balance")
+    fun subscribeOrderBook(marketSymbol: String, depth: String): Observable<OrderbookDelta> {
+        return subscribeChannel<OrderbookDelta>("orderbook_$marketSymbol" + "_$depth")
     }
 
     /**
      * Subscribes to a specific market's ticker
      * Corresponds to the Ticker channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Ticker)
-     * @param {String} symbol representation of the market that Ticker updates will be listened for (ex: "BTC-USD")
+     * @param {String} marketSymbol representation of the market that Ticker updates will be listened for (ex: "BTC-USD")
      * @return {Observable} an observable that will be updated with socket messages
      */
-    fun subscribeTicker(symbol: String): Observable<Ticker> {
-        return subscribeChannel<Ticker>("ticker_$symbol")
+    fun subscribeTicker(marketSymbol: String): Observable<Ticker> {
+        return subscribeChannel<Ticker>("ticker_$marketSymbol")
     }
 
     /**
@@ -151,11 +153,30 @@ class SocketSubscriptionService() {
     /**
      * Subscribes to the Trade socket
      * Corresponds to the Trade channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Trade)
-     * @param symbol String representation of the market that Trade updates will be listened for (ex: "BTC-USD")
+     * @param {String} marketSymbol representation of the market that Trade updates will be listened for (ex: "BTC-USD")
      * @return {Observable} An observable that will be updated with socket messages
      */
-    fun subscribeTrade(symbol: String): Observable<TradeDelta> {
-        return subscribeChannel<TradeDelta>("trade_$symbol")
+    fun subscribeTrade(marketSymbol: String): Observable<TradeDelta> {
+        return subscribeChannel<TradeDelta>("trade_$marketSymbol")
+    }
+
+    /**
+     * Creates a subscription to the authentication expiration message.
+     * This is an optional subscription that provides the option of implementing custom reauth logic,
+     * if there are no subscribers on this observable, default re-authentication logic is run.
+     */
+    fun subscribeAuthenticationExpiring(): Observable<String> {
+        val observable = PublishSubject.create<String>()
+        nonChannelObservables["authenticationExpiring"] = observable as PublishSubject<Any>
+        return observable
+    }
+
+    /**
+     * Re-authenticates the socket connection. Can be called if manually handling re-authentication, otherwise
+     * called by default when auth expires.
+     */
+    fun reAuthenticate() {
+        this.socketClient.authenticate()
     }
 
     private fun <T> subscribeChannel(channel: String) : Observable<T> {

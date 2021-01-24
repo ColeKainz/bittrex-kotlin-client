@@ -8,12 +8,13 @@ package com.bushka.bittrex.network.signalr
  */
 class BittrexSocketClient(messageHandler: Any) {
     val socketApi = SocketClient()
+    private var apiKey: String? = null
+    private var apiKeySecret: String? = null
 
     constructor(apiKey: String, apiKeySecret: String, messageHandler: Any) : this(messageHandler) {
-        val authResponse = socketApi.authenticate(apiKey, apiKeySecret)
-        if(!authResponse.Success) {
-            throw IllegalStateException("Auth error due to ${authResponse.ErrorCode}")
-        }
+        this.apiKey = apiKey
+        this.apiKeySecret = apiKeySecret
+        authenticate()
     }
 
     init {
@@ -22,6 +23,17 @@ class BittrexSocketClient(messageHandler: Any) {
             throw IllegalStateException("Connection failed")
         }
         socketApi.setMessageHandler(messageHandler)
+    }
+
+    fun authenticate() {
+        if(this.apiKey == null || this.apiKeySecret == null) {
+            throw IllegalStateException("Auth error due to missing api key or api key secret")
+        }
+
+        val authResponse = socketApi.authenticate(this.apiKey!!, this.apiKeySecret!!)
+        if(!authResponse.Success) {
+            throw IllegalStateException("Auth error due to ${authResponse.ErrorCode}")
+        }
     }
 
     fun subscribe(channels: List<String>): List<SocketResponse> {
