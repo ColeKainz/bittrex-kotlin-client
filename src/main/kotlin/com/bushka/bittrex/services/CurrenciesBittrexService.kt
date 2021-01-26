@@ -4,6 +4,7 @@ import com.bushka.bittrex.model.currencies.Currency
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -16,8 +17,8 @@ interface CurrenciesBittrexService {
     }
 
     @GET("v3/currencies")
-    fun getCurrencies(): BittrexObservable<List<Currency>>
+    fun getCurrencies(): BittrexObservable<Result<List<Currency>>>
 
     @GET("v3/currencies/{symbol}")
-    fun getCurrency(@Path("symbol") symbol: String): BittrexObservable<Currency>
+    fun getCurrency(@Path("symbol") symbol: String): BittrexObservable<Result<Currency>>
 }

@@ -5,6 +5,7 @@ import com.bushka.bittrex.model.account.AccountVolume
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.GET
 
 interface AccountBittrexService {
@@ -17,8 +18,8 @@ interface AccountBittrexService {
     }
 
     @GET("v3/account")
-    fun getAccount(): BittrexObservable<Account>
+    fun getAccount(): BittrexObservable<Result<Account>>
 
     @GET("v3/account/volume")
-    fun getAccountVolume(): BittrexObservable<AccountVolume>
+    fun getAccountVolume(): BittrexObservable<Result<AccountVolume>>
 }

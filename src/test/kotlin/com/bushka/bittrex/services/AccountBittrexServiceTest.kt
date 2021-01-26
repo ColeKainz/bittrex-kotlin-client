@@ -5,6 +5,8 @@ import com.bushka.bittrex.network.onFailure
 import com.bushka.bittrex.network.onSuccess
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import retrofit2.Response
+import retrofit2.adapter.rxjava2.Result
 
 class AccountBittrexServiceTest {
 
@@ -17,7 +19,7 @@ class AccountBittrexServiceTest {
         var result: Account? = null
         accountBittrexService.getAccount()
                 .onFailure { println(it.message) }
-                .onSuccess { result = it }
+                .onSuccess { result = it.response()?.body()}
 
         assertThat(result).isNotNull
     }

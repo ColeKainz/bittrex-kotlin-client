@@ -4,6 +4,7 @@ import com.bushka.bittrex.model.markets.*
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.GET
 import retrofit2.http.HEAD
 import retrofit2.http.Path
@@ -18,43 +19,43 @@ interface MarketsBittrexService {
     }
 
     @GET("v3/markets")
-    fun getMarkets(): BittrexObservable<List<Market>>
+    fun getMarkets(): BittrexObservable<Result<List<Market>>>
 
     @GET("v3/markets/{marketSymbol}")
-    fun getMarket(@Path("marketSymbol") symbol: String): BittrexObservable<Market>
+    fun getMarket(@Path("marketSymbol") symbol: String): BittrexObservable<Result<Market>>
 
     @GET("v3/markets/summaries")
-    fun getMarketSummaries(): BittrexObservable<List<MarketSummary>>
+    fun getMarketSummaries(): BittrexObservable<Result<List<MarketSummary>>>
 
     @GET("v3/markets/{marketSymbol}/summary")
-    fun getMarketSummary(@Path("marketSymbol") symbol: String): BittrexObservable<MarketSummary>
+    fun getMarketSummary(@Path("marketSymbol") symbol: String): BittrexObservable<Result<MarketSummary>>
 
     @HEAD("v3/markets/summaries")
     fun checkMarketSummaries()
 
     @GET("v3/markets/tickets")
-    fun getTickers(): BittrexObservable<List<Ticker>>
+    fun getTickers(): BittrexObservable<Result<List<Ticker>>>
 
     @GET("v3/markets/{marketSymbol}/ticker")
-    fun getTicker(@Path("marketSymbol") symbol: String): BittrexObservable<Ticker>
+    fun getTicker(@Path("marketSymbol") symbol: String): BittrexObservable<Result<Ticker>>
 
     @HEAD("v3/markets/tickets")
     fun checkTickers()
 
     @GET("v3/markets/{marketSymbol}/orderbook")
-    fun getOrderBook(@Path("marketSymbol") symbol: String, @Query("depth") depth: OrderBookDepth = OrderBookDepth.MID): BittrexObservable<OrderBook>
+    fun getOrderBook(@Path("marketSymbol") symbol: String, @Query("depth") depth: OrderBookDepth = OrderBookDepth.MID): BittrexObservable<Result<OrderBook>>
 
     @GET("v3/markets/{marketSymbol}/orderbook")
     fun checkOrderBook(@Path("marketSymbol") symbol: String, @Query("depth") depth: OrderBookDepth = OrderBookDepth.MID)
 
     @GET("v3/markets/{marketSymbol}/trade")
-    fun getTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Trade>
+    fun getTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Result<Trade>>
 
     @GET("v3/markets/{marketSymbol}/trade")
-    fun checkTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Trade>
+    fun checkTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Result<Trade>>
 
     @GET("v3/markets/{marketSymbol}/candles/{candleInterval}/recent")
-    fun getRecentCandles(@Path("marketSymbol") symbol: String, @Path("candleInterval") candleInterval: CandleInterval): BittrexObservable<List<Candle>>
+    fun getRecentCandles(@Path("marketSymbol") symbol: String, @Path("candleInterval") candleInterval: CandleInterval): BittrexObservable<Result<List<Candle>>>
 
     @GET("v3/markets/{marketSymbol}/candles/{candleInterval}/recent")
     fun checkRecentCandles(@Path("marketSymbol") symbol: String, @Path("candleInterval") candleInterval: CandleInterval)
@@ -64,5 +65,5 @@ interface MarketsBittrexService {
                          @Path("candleInterval") candleInterval: CandleInterval,
                          @Path("year") year: Int,
                          @Path("month") month: Int,
-                         @Path("day") day: Int): BittrexObservable<List<Candle>>
+                         @Path("day") day: Int): BittrexObservable<Result<List<Candle>>>
 }

@@ -5,6 +5,7 @@ import com.bushka.bittrex.model.deposits.DepositStatus
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.GET
 import retrofit2.http.HEAD
 import retrofit2.http.Path
@@ -31,11 +32,11 @@ interface DepositsBittrexService {
                         @Query("previousPageToken") previousPageToken: String? = null,
                         @Query("pageSize") pageSize: String? = null,
                         @Query("startDate") startDate: String? = null,
-                        @Query("endDate") endDate: String? = null): BittrexObservable<List<Deposit>>
+                        @Query("endDate") endDate: String? = null): BittrexObservable<Result<List<Deposit>>>
 
     @GET("v3/deposits/ByTxId/{txId}")
-    fun getOpenDeposits(@Path("txId") txId: String): BittrexObservable<List<Deposit>>
+    fun getOpenDeposits(@Path("txId") txId: String): BittrexObservable<Result<List<Deposit>>>
 
     @GET("v3/deposits/{depositId}")
-    fun getDeposit(@Path("depositId") depositId: String): BittrexObservable<Deposit>
+    fun getDeposit(@Path("depositId") depositId: String): BittrexObservable<Result<Deposit>>
 }

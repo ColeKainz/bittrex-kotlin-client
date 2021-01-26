@@ -7,6 +7,7 @@ import com.bushka.bittrex.model.withdrawals.WithdrawalStatus
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.*
 
 interface WithdrawalBittrexService {
@@ -18,19 +19,19 @@ interface WithdrawalBittrexService {
     }
 
     @GET("v3/withdrawals/open")
-    fun getOpenWithdrawals(@Query("status") status: WithdrawalStatus? = null, @Query("currencySymbol") symbol: String? = null): BittrexObservable<List<Withdrawal>>
+    fun getOpenWithdrawals(@Query("status") status: WithdrawalStatus? = null, @Query("currencySymbol") symbol: String? = null): BittrexObservable<Result<List<Withdrawal>>>
 
     @GET("v3/withdrawals/{withdrawalId}")
-    fun getWithdrawal(@Path("withdrawalId") withdrawalId: String): BittrexObservable<Withdrawal>
+    fun getWithdrawal(@Path("withdrawalId") withdrawalId: String): BittrexObservable<Result<Withdrawal>>
 
     @GET("v3/withdrawals/ByTxId/{txId}")
-    fun getWithdrawals(@Path("txId") txId: String): BittrexObservable<List<Withdrawal>>
+    fun getWithdrawals(@Path("txId") txId: String): BittrexObservable<Result<List<Withdrawal>>>
 
     @DELETE("v3/withdrawals/{withdrawalId}")
-    fun deleteWithdrawal(@Path("withdrawalId") withdrawalId: String): BittrexObservable<Withdrawal>
+    fun deleteWithdrawal(@Path("withdrawalId") withdrawalId: String): BittrexObservable<Result<Withdrawal>>
 
     @POST("v3/withdrawals/")
-    fun postWithdrawal(@Body withdrawal: NewWithdrawal): BittrexObservable<Withdrawal>
+    fun postWithdrawal(@Body withdrawal: NewWithdrawal): BittrexObservable<Result<Withdrawal>>
 
     @GET("v3/withdrawals/closed")
     fun getClosedWithdrawals(@Query("status") status: WithdrawalStatus? = null,
@@ -39,8 +40,8 @@ interface WithdrawalBittrexService {
                         @Query("previousPageToken") previousPageToken: String? = null,
                         @Query("pageSize") pageSize: String? = null,
                         @Query("startDate") startDate: String? = null,
-                        @Query("endDate") endDate: String? = null): BittrexObservable<List<Withdrawal>>
+                        @Query("endDate") endDate: String? = null): BittrexObservable<Result<List<Withdrawal>>>
 
     @GET("v3/withdrawals/whitelistAddresses")
-    fun getWhiteListedAddresses(): BittrexObservable<WhiteListAddress>
+    fun getWhiteListedAddresses(): BittrexObservable<Result<WhiteListAddress>>
 }

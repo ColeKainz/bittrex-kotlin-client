@@ -4,6 +4,7 @@ import com.bushka.bittrex.model.balances.Balance
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.GET
 import retrofit2.http.HEAD
 import retrofit2.http.Path
@@ -17,11 +18,11 @@ interface BalancesBittrexService {
     }
 
     @GET("v3/balances")
-    fun getBalances(): BittrexObservable<List<Balance>>
+    fun getBalances(): BittrexObservable<Result<List<Balance>>>
 
     @HEAD("v3/balances")
     fun checkBalances()
 
     @GET("v3/balances/{symbols}")
-    fun getBalances(@Path("symbols") symbol: String): BittrexObservable<List<Balance>>
+    fun getBalances(@Path("symbols") symbol: String): BittrexObservable<Result<List<Balance>>>
 }
