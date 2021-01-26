@@ -4,6 +4,6 @@ import com.bushka.bittrex.model.conditionalorders.ConditionalOrder
 
 data class ConditionalOrderDelta(
         val accountId: String,
-        val sequence: Int,
+        override val sequence: Int,
         val delta: ConditionalOrder
-)
+) : Sequenced

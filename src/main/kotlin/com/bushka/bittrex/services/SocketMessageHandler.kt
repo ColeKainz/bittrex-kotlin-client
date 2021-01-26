@@ -20,51 +20,51 @@ class SocketMessageHandler(
 
     fun balance(compressedData: String) {
         val deserialized = deserializeMessage<BalanceDelta>(compressedData)
-        updateSocketWithData("balance", deserialized)
+        updateObservableWithData("balance", deserialized)
     }
 
     fun candle(compressedData: String) {
         val deserialized = deserializeMessage<CandleDelta>(compressedData)
-        updateSocketWithData("candle_" + deserialized.marketSymbol, deserialized)
+        updateObservableWithData("candle_" + deserialized.marketSymbol, deserialized)
     }
 
     fun conditional_order(compressedData: String) {
         val deserialized = deserializeMessage<ConditionalOrderDelta>(compressedData)
-        updateSocketWithData("conditional_order", deserialized)
+        updateObservableWithData("conditional_order", deserialized)
     }
 
     fun deposit(compressedData: String) {
         val deserialized = deserializeMessage<DepositDelta>(compressedData)
-        updateSocketWithData("deposit", deserialized)
+        updateObservableWithData("deposit", deserialized)
     }
 
     fun execution(compressedData: String) {
         val deserialized = deserializeMessage<ExecutionDelta>(compressedData)
-        updateSocketWithData("execution", deserialized)
+        updateObservableWithData("execution", deserialized)
     }
 
     fun heartbeat(compressedData: String) {
-        updateSocketWithData("heartbeat", "heartbeat")
+        updateObservableWithData("heartbeat", "heartbeat")
     }
 
     fun market_summaries(compressedData: String) {
         val deserialized = deserializeMessage<MarketSummaryDelta>(compressedData)
-        updateSocketWithData("market_summaries", deserialized)
+        updateObservableWithData("market_summaries", deserialized)
     }
 
     fun market_summary(compressedData: String) {
         val deserialized = deserializeMessage<MarketSummary>(compressedData)
-        updateSocketWithData("market_summary_" + deserialized.symbol, deserialized)
+        updateObservableWithData("market_summary_" + deserialized.symbol, deserialized)
     }
 
     fun ticker(compressedData: String) {
         val deserialized = deserializeMessage<Ticker>(compressedData)
-        updateSocketWithData("ticker_" + deserialized.symbol, deserialized)
+        updateObservableWithData("ticker_" + deserialized.symbol, deserialized)
     }
 
     fun tickers(compressedData: String) {
         val deserialized = deserializeMessage<TickerDelta>(compressedData)
-        updateSocketWithData("tickers", deserialized)
+        updateObservableWithData("tickers", deserialized)
     }
 
     fun authenticationExpiring() {
@@ -77,7 +77,7 @@ class SocketMessageHandler(
         }
     }
 
-    private fun updateSocketWithData(channelName: String, data: Any) {
+    private fun updateObservableWithData(channelName: String, data: Any) {
         val observable = observables[channelName]
         observable?.onNext(data)
     }

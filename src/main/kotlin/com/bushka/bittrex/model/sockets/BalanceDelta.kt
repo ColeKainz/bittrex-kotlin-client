@@ -3,6 +3,6 @@ import com.bushka.bittrex.model.balances.Balance
 
 data class BalanceDelta(
         val accountId: String,
-        val sequence: Int,
-        val delta: Balance
-)
+        val delta: Balance,
+        override val sequence: Int
+) : Sequenced

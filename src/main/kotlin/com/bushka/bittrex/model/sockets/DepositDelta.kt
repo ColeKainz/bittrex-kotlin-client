@@ -4,6 +4,6 @@ import com.bushka.bittrex.model.deposits.Deposit
 
 data class DepositDelta(
         val accountId: String,
-        val sequence: Int,
+        override val sequence: Int,
         val delta: Deposit
-)
+) : Sequenced

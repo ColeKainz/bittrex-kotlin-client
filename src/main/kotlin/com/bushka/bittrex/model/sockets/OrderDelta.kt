@@ -4,6 +4,6 @@ import com.bushka.bittrex.model.orders.Order
 
 data class OrderDelta(
         val accountId: String,
-        val sequence: Int,
+        override val sequence: Int,
         val delta: Order
-)
+) : Sequenced
