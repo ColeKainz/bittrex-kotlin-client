@@ -4,6 +4,7 @@ import com.bushka.bittrex.model.addresses.Address
 import com.bushka.bittrex.model.addresses.NewAddress
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.Body
@@ -20,11 +21,11 @@ interface AddressesBittrexService {
     }
 
     @GET("v3/addresses")
-    fun getAddresses(): BittrexObservable<Result<List<Address>>>
+    fun getAddresses(): BittrexObservable<Response<List<Address>>>
 
     @POST("v3/addresses")
-    fun putAddresses(@Body address: NewAddress): BittrexObservable<Result<List<Address>>>
+    fun putAddresses(@Body address: NewAddress): BittrexObservable<Response<List<Address>>>
 
     @GET("v3/addresses/{symbol}")
-    fun getAddresses(@Path("symbol") symbol: String): BittrexObservable<Result<Address>>
+    fun getAddresses(@Path("symbol") symbol: String): BittrexObservable<Response<Address>>
 }

@@ -6,6 +6,7 @@ import com.bushka.bittrex.model.orders.Execution
 import com.bushka.bittrex.model.orders.Order
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.*
@@ -19,16 +20,16 @@ interface OrdersBittrexService {
     }
 
     @GET("v3/orders/open")
-    fun getOpenOrders(@Query("marketSymbol") symbol: String? = null): BittrexObservable<Result<List<Order>>>
+    fun getOpenOrders(@Query("marketSymbol") symbol: String? = null): BittrexObservable<Response<List<Order>>>
 
     @HEAD("v3/orders/open")
     fun checkOpenOrders()
 
     @GET("v3/orders/{orderId}")
-    fun getOrder(@Path("orderId") orderId: String): BittrexObservable<Result<Order>>
+    fun getOrder(@Path("orderId") orderId: String): BittrexObservable<Response<Order>>
 
     @DELETE("v3/orders/{orderId}")
-    fun deleteOrder(@Path("orderId") orderId: String): BittrexObservable<Result<Order>>
+    fun deleteOrder(@Path("orderId") orderId: String): BittrexObservable<Response<Order>>
 
     @GET("v3/orders/closed")
     fun getClosedOrders(@Query("status") status: DepositStatus? = null,
@@ -37,11 +38,11 @@ interface OrdersBittrexService {
                         @Query("previousPageToken") previousPageToken: String? = null,
                         @Query("pageSize") pageSize: String? = null,
                         @Query("startDate") startDate: String? = null,
-                        @Query("endDate") endDate: String? = null): BittrexObservable<Result<List<Order>>>
+                        @Query("endDate") endDate: String? = null): BittrexObservable<Response<List<Order>>>
 
     @GET("v3/orders/{orderId}/executions")
-    fun getExecutions(@Path("orderId") orderId: String): BittrexObservable<Result<List<Execution>>>
+    fun getExecutions(@Path("orderId") orderId: String): BittrexObservable<Response<List<Execution>>>
 
     @POST("v3/orders/")
-    fun postOrder(@Body order: NewOrder): BittrexObservable<Result<Order>>
+    fun postOrder(@Body order: NewOrder): BittrexObservable<Response<Order>>
 }

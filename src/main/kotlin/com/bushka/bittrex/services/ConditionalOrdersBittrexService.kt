@@ -4,8 +4,8 @@ import com.bushka.bittrex.model.conditionalorders.ConditionalOrder
 import com.bushka.bittrex.model.conditionalorders.NewConditionalOrder
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
+import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.*
 
 interface ConditionalOrdersBittrexService {
@@ -17,10 +17,10 @@ interface ConditionalOrdersBittrexService {
     }
 
     @GET("v3/conditional-orders/{conditionalOrderId}")
-    fun getConditionalOrder(@Path("conditionalOrderId") id: String): BittrexObservable<Result<ConditionalOrder>>
+    fun getConditionalOrder(@Path("conditionalOrderId") id: String): BittrexObservable<Response<ConditionalOrder>>
 
     @DELETE("v3/conditional-orders/{conditionalOrderId}")
-    fun deleteConditionalOrder(@Path("conditionalOrderId") id: String): BittrexObservable<Result<ConditionalOrder>>
+    fun deleteConditionalOrder(@Path("conditionalOrderId") id: String): BittrexObservable<Response<ConditionalOrder>>
 
     @GET("v3/conditional-orders/closed")
     fun closeConditionalOrder(@Query("marketSymbol") symbol: String? = null,
@@ -28,11 +28,11 @@ interface ConditionalOrdersBittrexService {
                               @Query("previousPageToken") previousPageToken: String? = null,
                               @Query("pageSize") pageSize: String? = null,
                               @Query("startDate") startDate: String? = null,
-                              @Query("endDate") endDate: String): BittrexObservable<Result<ConditionalOrder>>
+                              @Query("endDate") endDate: String): BittrexObservable<Response<ConditionalOrder>>
 
     @GET("v3/conditional-orders/open")
-    fun openConditionalOrder(@Query("marketSymbol") symbol: String? = null): BittrexObservable<Result<ConditionalOrder>>
+    fun openConditionalOrder(@Query("marketSymbol") symbol: String? = null): BittrexObservable<Response<ConditionalOrder>>
 
     @POST("v3/conditional-orders")
-    fun postConditionalOrder(@Body newConditionalOrder: NewConditionalOrder): BittrexObservable<Result<ConditionalOrder>>
+    fun postConditionalOrder(@Body newConditionalOrder: NewConditionalOrder): BittrexObservable<Response<ConditionalOrder>>
 }

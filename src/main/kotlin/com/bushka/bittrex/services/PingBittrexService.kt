@@ -3,6 +3,7 @@ package com.bushka.bittrex.services
 import com.bushka.bittrex.model.ping.Ping
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.Result
 import retrofit2.http.GET
@@ -16,5 +17,5 @@ interface PingBittrexService {
     }
 
     @GET("v3/ping")
-    fun getPing(): BittrexObservable<Result<Ping>>
+    fun getPing(): BittrexObservable<Response<Ping>>
 }
