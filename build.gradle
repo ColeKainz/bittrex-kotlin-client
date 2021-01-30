@@ -54,8 +54,8 @@ dependencies {
     implementation "com.github.devcsrj:slf4j-okhttp3-logging-interceptor:$slf4j_okhttp_version"
 
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
 
     implementation "net.donky:donky-signalr:$signalr_version"
