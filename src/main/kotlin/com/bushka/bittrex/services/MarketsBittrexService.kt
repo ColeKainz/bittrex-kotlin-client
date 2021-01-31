@@ -49,8 +49,8 @@ interface MarketsBittrexService {
     @GET("v3/markets/{marketSymbol}/orderbook")
     fun checkOrderBook(@Path("marketSymbol") symbol: String, @Query("depth") depth: OrderBookDepth = OrderBookDepth.MID)
 
-    @GET("v3/markets/{marketSymbol}/trade")
-    fun getTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Response<Trade>>
+    @GET("v3/markets/{marketSymbol}/trades")
+    fun getTrades(@Path("marketSymbol") symbol: String): BittrexObservable<Response<List<Trade>>>
 
     @GET("v3/markets/{marketSymbol}/trade")
     fun checkTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Response<Trade>>
