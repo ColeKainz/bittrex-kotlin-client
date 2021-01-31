@@ -2,7 +2,7 @@ package com.bushka.bittrex.services
 
 import com.bushka.bittrex.model.conditionalorders.NewOrder
 import com.bushka.bittrex.model.deposits.DepositStatus
-import com.bushka.bittrex.model.orders.Execution
+import com.bushka.bittrex.model.executions.Execution
 import com.bushka.bittrex.model.orders.Order
 import com.bushka.bittrex.network.BittrexObservable
 import com.bushka.bittrex.network.retrofit.RetrofitFactory
@@ -23,7 +23,7 @@ interface OrdersBittrexService {
     fun getOpenOrders(@Query("marketSymbol") symbol: String? = null): BittrexObservable<Response<List<Order>>>
 
     @HEAD("v3/orders/open")
-    fun checkOpenOrders()
+    fun checkOpenOrders(): BittrexObservable<Response<Unit>>
 
     @GET("v3/orders/{orderId}")
     fun getOrder(@Path("orderId") orderId: String): BittrexObservable<Response<Order>>

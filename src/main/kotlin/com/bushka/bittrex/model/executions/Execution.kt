@@ -1,4 +1,4 @@
-package com.bushka.bittrex.model.orders
+package com.bushka.bittrex.model.executions
 
 import java.math.BigDecimal
 

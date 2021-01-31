@@ -32,7 +32,7 @@ interface MarketsBittrexService {
     fun getMarketSummary(@Path("marketSymbol") symbol: String): BittrexObservable<Response<MarketSummary>>
 
     @HEAD("v3/markets/summaries")
-    fun checkMarketSummaries()
+    fun checkMarketSummaries(): BittrexObservable<Response<Unit>>
 
     @GET("v3/markets/tickets")
     fun getTickers(): BittrexObservable<Response<List<Ticker>>>
@@ -41,25 +41,25 @@ interface MarketsBittrexService {
     fun getTicker(@Path("marketSymbol") symbol: String): BittrexObservable<Response<Ticker>>
 
     @HEAD("v3/markets/tickets")
-    fun checkTickers()
+    fun checkTickers(): BittrexObservable<Response<Unit>>
 
     @GET("v3/markets/{marketSymbol}/orderbook")
     fun getOrderBook(@Path("marketSymbol") symbol: String, @Query("depth") depth: OrderBookDepth = OrderBookDepth.MID): BittrexObservable<Response<OrderBook>>
 
     @GET("v3/markets/{marketSymbol}/orderbook")
-    fun checkOrderBook(@Path("marketSymbol") symbol: String, @Query("depth") depth: OrderBookDepth = OrderBookDepth.MID)
+    fun checkOrderBook(@Path("marketSymbol") symbol: String, @Query("depth") depth: OrderBookDepth = OrderBookDepth.MID): BittrexObservable<Response<Unit>>
 
     @GET("v3/markets/{marketSymbol}/trades")
     fun getTrades(@Path("marketSymbol") symbol: String): BittrexObservable<Response<List<Trade>>>
 
     @GET("v3/markets/{marketSymbol}/trade")
-    fun checkTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Response<Trade>>
+    fun checkTrade(@Path("marketSymbol") symbol: String): BittrexObservable<Response<Unit>>
 
     @GET("v3/markets/{marketSymbol}/candles/{candleInterval}/recent")
     fun getRecentCandles(@Path("marketSymbol") symbol: String, @Path("candleInterval") candleInterval: CandleInterval): BittrexObservable<Response<List<Candle>>>
 
     @GET("v3/markets/{marketSymbol}/candles/{candleInterval}/recent")
-    fun checkRecentCandles(@Path("marketSymbol") symbol: String, @Path("candleInterval") candleInterval: CandleInterval)
+    fun checkRecentCandles(@Path("marketSymbol") symbol: String, @Path("candleInterval") candleInterval: CandleInterval): BittrexObservable<Response<Unit>>
 
     @GET("v3/markets/{marketSymbol}/candles/{candleInterval}/historical/{year}/{month}/{day}")
     fun getCandles(@Path("marketSymbol") symbol: String,

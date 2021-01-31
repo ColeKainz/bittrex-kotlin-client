@@ -24,7 +24,7 @@ interface DepositsBittrexService {
     fun getOpenDeposits(@Query("status") status: DepositStatus? = null, @Query("currencySymbol") symbol: String? = null): BittrexObservable<Response<List<Deposit>>>
 
     @HEAD("v3/deposits/open")
-    fun checkOpenDeposits()
+    fun checkOpenDeposits(): BittrexObservable<Response<Unit>>
 
     @GET("v3/deposits/closed")
     fun getClosedDeposits(@Query("status") status: DepositStatus? = null,
