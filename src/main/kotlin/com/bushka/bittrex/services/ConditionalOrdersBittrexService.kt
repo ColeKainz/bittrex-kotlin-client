@@ -33,6 +33,9 @@ interface ConditionalOrdersBittrexService {
     @GET("v3/conditional-orders/open")
     fun openConditionalOrder(@Query("marketSymbol") symbol: String? = null): BittrexObservable<Response<ConditionalOrder>>
 
+    @HEAD("v3/conditional-orders/open")
+    fun checkConditionalOrder(): BittrexObservable<Response<Unit>>
+
     @POST("v3/conditional-orders")
     fun postConditionalOrder(@Body newConditionalOrder: NewConditionalOrder): BittrexObservable<Response<ConditionalOrder>>
 }

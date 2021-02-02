@@ -39,6 +39,10 @@ class BittrexClient(key: String, secret: String) {
         OrdersBittrexService.create(retrofit)
     }
 
+    val exchanges by lazy {
+        ExecutionsBittrexService.create(retrofit)
+    }
+
     val ping by lazy {
         PingBittrexService.create(retrofit)
     }
