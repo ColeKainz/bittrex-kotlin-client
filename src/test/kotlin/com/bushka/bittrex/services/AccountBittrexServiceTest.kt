@@ -14,7 +14,7 @@ class AccountBittrexServiceTest {
         AccountBittrexService.create()
     }
 
-    @Test
+    /*@Test
     fun testAccount() {
         var result: Account? = null
         accountBittrexService.getAccount()
@@ -22,5 +22,5 @@ class AccountBittrexServiceTest {
                 .onSuccess { result = it.response()?.body()}
 
         assertThat(result).isNotNull
-    }
+    }*/
 }
