@@ -22,7 +22,7 @@ interface BalancesBittrexService {
     fun getBalances(): BittrexObservable<Response<List<Balance>>>
 
     @HEAD("v3/balances")
-    fun checkBalances(): BittrexObservable<Response<Unit>>
+    fun checkBalances(): BittrexObservable<Response<Void>>
     //fun checkBalances(): Void
 
     @GET("v3/balances/{symbols}")
