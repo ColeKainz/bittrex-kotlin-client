@@ -40,7 +40,11 @@ class BittrexSocketClient(messageHandler: Any) {
         return socketApi.subscribe(channels)
     }
 
-    fun unsubscribe(): Boolean {
+    fun unsubscribe(channels: List<String>): List<SocketResponse> {
+        return socketApi.unsubscribe(channels)
+    }
+
+    fun disconnect(): Boolean {
         return socketApi.disconnect()
     }
 }

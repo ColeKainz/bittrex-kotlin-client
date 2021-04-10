@@ -2,6 +2,9 @@ package com.bushka.bittrex.credentials
 
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.math.BigInteger
+import java.security.MessageDigest
+import kotlin.math.sign
 
 class ApiSignInterceptor(private val key: String, secret: String) : Interceptor {
 
@@ -15,14 +18,25 @@ class ApiSignInterceptor(private val key: String, secret: String) : Interceptor 
             return chain.proceed(chain.request())
 
         val currentMillis = System.currentTimeMillis()
-        var modifiedUrl = url.toString()
-        modifiedUrl += (if (modifiedUrl.contains('?')) '&' else '?')
-        modifiedUrl += "apikey=$key&nonce=$currentMillis"
+        val body = if(chain.request().body() == null) {
+            ""
+        } else {
+            //TODO: This doesn't work
+            //We need chain.request().body().content to be visible
+            chain.request().body().toString()
+        }
 
-        val signedUrl = hmacSHA512.encode(modifiedUrl)
+        val hashedBody = MacSHA512.hash(body)
+        val apiSignature = currentMillis.toString() + chain.request().url() + chain.request().method() + hashedBody
+        val signedApiSignature = hmacSHA512.encode(apiSignature)
+
+
         val request = chain.request().newBuilder()
-                .url(modifiedUrl)
-                .addHeader("apisign", signedUrl)
+                .url(url)
+                .addHeader("Api-Key", key)
+                .addHeader("Api-Timestamp", currentMillis.toString())
+                .addHeader("Api-Content-Hash", hashedBody)
+                .addHeader("Api-Signature", signedApiSignature)
                 .build()
         return chain.proceed(request)
     }

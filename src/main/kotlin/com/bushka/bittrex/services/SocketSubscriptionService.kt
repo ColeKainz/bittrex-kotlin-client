@@ -1,11 +1,14 @@
 package com.bushka.bittrex.services
 
+import com.bushka.bittrex.BittrexClient
 import com.bushka.bittrex.model.sockets.MarketSummary
 import com.bushka.bittrex.model.sockets.Ticker
 import com.bushka.bittrex.model.sockets.*
+import com.bushka.bittrex.model.withdrawals.NewWithdrawal
 import com.bushka.bittrex.network.signalr.BittrexSocketClient
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import java.math.BigDecimal
 
 /**
  * Handles subscribing to sockets and returns observables that can be used to watch for changes.
@@ -45,6 +48,13 @@ class SocketSubscriptionService() {
     }
 
     /**
+     * Unsubscribes to the balance socket
+     */
+    fun unsubscribeBalance(): Unit {
+        return unsubscribeChannel("balance")
+    }
+
+    /**
      * Subscribes to the Candle socket
      * Corresponds to the Candle channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Candle)
      * @param {String} marketSymbol representation of the market that Candle updates will be listened for (ex: "BTC-USD")
@@ -57,12 +67,26 @@ class SocketSubscriptionService() {
     }
 
     /**
+     * Unsubscribes to the Candle socket
+     */
+    fun unsubscribeCandle(marketSymbol: String, interval: String): Unit {
+        unsubscribeChannel("candle_$marketSymbol" + "_" + interval)
+    }
+
+    /**
      * Subscribes to the Conditional Order socket
      * Corresponds to the Conditional Order channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Conditional-Order)
      * @return {Observable} An observable that will be updated with socket messages
      */
     fun subscribeConditionalOrder(): Observable<ConditionalOrderDelta> {
         return subscribeChannel<ConditionalOrderDelta>("conditional_order")
+    }
+
+    /**
+     * Unsubscribes to the Conditional Order socket
+     */
+    fun unsubscribeConditionalOrder(): Unit {
+        unsubscribeChannel("conditional_order")
     }
 
     /**
@@ -75,12 +99,26 @@ class SocketSubscriptionService() {
     }
 
     /**
+     * Unsubscribes to the Deposit socket
+     */
+    fun unsubscribeDeposit(): Unit {
+        unsubscribeChannel("deposit")
+    }
+
+    /**
      * Subscribes to the Execution socket
      * Corresponds to the Execution channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Execution)
      * @return {Observable} An observable that will be updated with socket messages
      */
     fun subscribeExecution(): Observable<ExecutionDelta> {
         return subscribeChannel<ExecutionDelta>("execution")
+    }
+
+    /**
+     * Unsubscribes to the Execution socket
+     */
+    fun unsubscribeExecution(): Unit {
+        unsubscribeChannel("execution")
     }
 
     /**
@@ -93,12 +131,26 @@ class SocketSubscriptionService() {
     }
 
     /**
+     * Unsubscribes to the Heartbeat socket
+     */
+    fun unsubscribeHeartbeat(): Unit {
+        unsubscribeChannel("heartbeat")
+    }
+
+    /**
      * Subscribes to the Market Summaries socket
      * Corresponds to the Market Summaries channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Market-Summaries)
      * @return {Observable} An observable that will be updated with socket messages
      */
     fun subscribeMarketSummaries(): Observable<MarketSummaryDelta> {
         return subscribeChannel<MarketSummaryDelta>("market_summaries")
+    }
+
+    /**
+     * Unsubscribes to the Market Summaries socket
+     */
+    fun unsubscribeMarketSummaries(): Unit {
+        unsubscribeChannel("market_summaries")
     }
 
     /**
@@ -112,12 +164,26 @@ class SocketSubscriptionService() {
     }
 
     /**
+     * Unsubscribes to the Market Summary socket
+     */
+    fun unsubscribeMarketSummary(marketSymbol: String): Unit {
+        unsubscribeChannel("market_summary_$marketSymbol")
+    }
+
+    /**
      * Subscribes to the Order socket
      * Corresponds to the Order channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Order)
      * @return {Observable} An observable that will be updated with socket messages
      */
     fun subscribeOrder(): Observable<OrderDelta> {
         return subscribeChannel<OrderDelta>("order")
+    }
+
+    /**
+     * Unsubscribes to the Order socket
+     */
+    fun unsubscribeOrder(): Unit {
+        unsubscribeChannel("order")
     }
 
     /**
@@ -132,6 +198,13 @@ class SocketSubscriptionService() {
     }
 
     /**
+     * Unsubscribes to the Order Book socket
+     */
+    fun unsubscribeOrderBook(marketSymbol: String, depth: String): Unit {
+        unsubscribeChannel("orderbook_$marketSymbol" + "_$depth")
+    }
+
+    /**
      * Subscribes to a specific market's ticker
      * Corresponds to the Ticker channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Ticker)
      * @param {String} marketSymbol representation of the market that Ticker updates will be listened for (ex: "BTC-USD")
@@ -141,6 +214,14 @@ class SocketSubscriptionService() {
         return subscribeChannel<Ticker>("ticker_$marketSymbol")
     }
 
+
+    /**
+     * Unsubscribes to a specific market's ticker
+     */
+    fun unsubscribeTicker(marketSymbol: String): Unit {
+        unsubscribeChannel("ticker_$marketSymbol")
+    }
+
     /**
      * Subscribes to the Tickers socket
      * Corresponds to the Tickers channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Tickers)
@@ -148,6 +229,13 @@ class SocketSubscriptionService() {
      */
     fun subscribeTickers(): Observable<TickerDelta> {
         return subscribeChannel<TickerDelta>("tickers")
+    }
+
+    /**
+     * Unsubscribes to the Tickers socket
+     */
+    fun unsubscribeTickers(): Unit {
+        unsubscribeChannel("tickers")
     }
 
     /**
@@ -161,6 +249,14 @@ class SocketSubscriptionService() {
     }
 
     /**
+     * Unsubscribes to the Trade socket
+     * Corresponds to the Trade channel from the Bittrex API (https://bittrex.github.io/api/v3#method-Trade)
+     */
+    fun unsubscribeTrade(marketSymbol: String): Unit {
+        unsubscribeChannel("trade_$marketSymbol")
+    }
+
+    /**
      * Creates a subscription to the authentication expiration message.
      * This is an optional subscription that provides the option of implementing custom reauth logic,
      * if there are no subscribers on this observable, default re-authentication logic is run.
@@ -169,6 +265,13 @@ class SocketSubscriptionService() {
         val observable = PublishSubject.create<String>()
         nonChannelObservables["authenticationExpiring"] = observable as PublishSubject<Any>
         return observable
+    }
+
+    /**
+     * Unsubscribes to the authentication expiration message.
+     */
+    fun unsubscribeAuthenticationExpiring(): Unit {
+        unsubscribeChannel("authenticationExpiring")
     }
 
     /**
@@ -185,19 +288,22 @@ class SocketSubscriptionService() {
         return observable
     }
 
-    /**Todo: Unsubscribe ticker method to remove observable**/
+
+    private fun unsubscribeChannel(channel: String) : Unit {
+        socketClient.unsubscribe(listOf(channel))
+        observables.remove(channel)
+    }
 
     /**
      * Starts listening to the socket once all the channel subscriptions have been set up.
      * This method *must* be called to start receiving messages
      */
     fun start() {
-        /**TODO: Disallow subscribe if connection exists**/
         val s = socketClient.subscribe(observables.keys.toList())
     }
 
     fun stop() {
-        socketClient.unsubscribe()
+        socketClient.disconnect()
     }
 }
 
@@ -209,6 +315,9 @@ fun main(args: Array<String>) {
     val tickerObservable = s.subscribeTickers()
     tickerObservable.subscribe { arg ->
         println(arg)
+        s.unsubscribeTickers()
     }
     s.start()
+
+
 }
